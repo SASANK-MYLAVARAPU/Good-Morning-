@@ -1,0 +1,42 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class DeleteRecordDemo {
+    // Step-2: Define constants for JDBC URL, username, and password
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/mydatabase";
+    private static final String USER = "root";
+    private static final String PASSWORD = "your_password"; // Replace with your MySQL password
+
+    public static void main(String[] args) {
+        // Step-4: Define the DELETE query
+        String query = "DELETE FROM users WHERE id = ?";
+        
+        // Hardcoded user ID to delete
+        int userId = 2;
+
+        // Step-3 & Step-9: Use try-with-resources to automatically close connection and statement
+        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+            // Step-5: Set the parameter for the PreparedStatement (id = 2)
+            pstmt.setInt(1, userId);
+
+            // Step-6: Execute the DELETE statement and store the number of rows affected
+            int rowsAffected = pstmt.executeUpdate();
+
+            // Step-7: Check if any rows were deleted and print the appropriate message
+            if (rowsAffected > 0) {
+                System.out.println("Row deleted successfully.");
+            } else {
+                System.out.println("No rows were deleted.");
+            }
+
+        } catch (SQLException e) {
+            // Step-8: Handle SQLException
+            System.err.println("Database error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
